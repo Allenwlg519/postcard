@@ -1,0 +1,30 @@
+{
+  "entities": {
+    "Postcard": {
+      "title": "Postcard",
+      "description": "A digital postcard with content and metadata.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "The title of the postcard." },
+        "location": { "type": "string", "description": "The location where the postcard was 'sent' from." },
+        "date": { "type": "string", "description": "The date of the postcard." },
+        "content": { "type": "string", "description": "The handwritten message on the postcard." },
+        "backContent": { "type": "string", "description": "The message on the back of the postcard." },
+        "image": { "type": "string", "description": "The image URL for the postcard." },
+        "rotation": { "type": "number", "description": "The visual rotation angle." },
+        "x": { "type": "number", "description": "The x-coordinate percentage." },
+        "y": { "type": "number", "description": "The y-coordinate percentage." },
+        "lastEditedBy": { "type": "string", "description": "The name of the last person who edited the postcard." },
+        "lastEditedByUid": { "type": "string", "description": "The UID of the last person who edited the postcard." },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "The last update timestamp." }
+      },
+      "required": ["title", "location", "content", "image"]
+    }
+  },
+  "firestore": {
+    "postcards": {
+      "schema": "Postcard",
+      "description": "A collection of all postcards in the gallery."
+    }
+  }
+}

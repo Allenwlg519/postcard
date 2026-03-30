@@ -1,0 +1,56 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    // Collection: postcards
+    // Fields:
+    //   - title: string (required)
+    //   - location: string (required)
+    //   - date: string (required)
+    //   - content: string (required)
+    //   - image: string (required)
+    //   - rotation: number
+    //   - x: number
+    //   - y: number
+    //   - lastEditedBy: string
+    //   - lastEditedByUid: string
+    //   - updatedAt: timestamp
+    // ===============================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        ((exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin') ||
+          (request.auth.token.email == "allenwu51918@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function isValidPostcard(data) {
+      // Relaxed validation slightly to ensure existing docs can be updated
+      return data.title is string && data.title.size() > 0 &&
+             data.location is string && data.location.size() > 0 &&
+             data.content is string && data.content.size() > 0 &&
+             data.backContent is string &&
+             data.image is string && data.image.size() > 0;
+    }
+
+    match /postcards/{postcardId} {
+      allow read: if true;
+      allow create, update: if isValidPostcard(request.resource.data);
+      allow delete: if true;
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId) || isAdmin();
+    }
+  }
+}
