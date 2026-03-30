@@ -11,7 +11,14 @@
         正在加载竹林...
       </div>
     </div>
-    <script type="module" src="src/main.tsx"></script>
+    <script>
+      console.log('HTML Loaded');
+      console.log('Location:', window.location.href);
+      window.addEventListener('error', function(e) {
+        console.error('Global Error:', e.message, 'at', e.filename);
+      }, true);
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
 
